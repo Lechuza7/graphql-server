@@ -38,13 +38,18 @@ const typeDefs = gql`
   type Query {
     personCount: Int!
     allPersons: [Person]!
+    findPerson(name: String!): Person
   }
 `
 //en resolvers establecemos métodos para resolver las querys que definimos previamente.
 const resolvers = {
   Query: {
     personCount: () => persons.length,
-    allPersons: () => persons
+    allPersons: () => persons,
+    findPerson: (root, args) => {
+      const {name} = args
+      return persons.find(person => person.name === name)
+    }
   }
 }
 
