@@ -1,4 +1,5 @@
-import {ApolloServer, gql} from 'apollo-server'
+import {ApolloServer, gql} from 'apollo-server';
+import {v1 as uuid} from "uuid";
 
 const persons = [
   {
@@ -41,7 +42,15 @@ const typeDefs = gql`
   type Query {
     personCount: Int!
     allPersons: [Person]!
-    findPerson(name: String!): Person
+    findPerson(name: String!): Person 
+  }
+  type Mutation {
+    addPerson(
+      name: String!
+      phone: String
+      street: String!
+      city: String!
+    ): Person
   }
 `
 //en resolvers establecemos métodos para resolver las querys que definimos previamente.
@@ -52,6 +61,13 @@ const resolvers = {
     findPerson: (root, args) => {
       const {name} = args
       return persons.find(person => person.name === name)
+    }
+  },
+  Mutation: {
+    addPerson: (root, args) => {
+      const person = {...args, id: uuid()} //en args tenemos phone, name, streett... con uuid generamos un id aleatorio
+      persons.push(person) //para actualizar la base de datos con una nueva persona
+      return person
     }
   },
   Person: {
