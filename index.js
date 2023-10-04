@@ -27,16 +27,17 @@ const persons = [
 // los datos requeridos obligatoriamente finalizan con "!". También definimos un type query, en este caso son dos peticiones que podremos hacer al servidor, una 
 // para contar el número de personas que nos devolverá un número entero (integer), y otra para recuperar datos de todas las personas que nos devolverá un array de personas.
 const typeDefs = gql`
-  type Person {
-    name: String!
-    phone: String
+  type Address {
     street: String!
     city: String!
-    address: String!
+  }
+  type Person {
+    name: String!
+    phone: String!
+    address: Address!
     check: String!
     id: ID!
   }
-
   type Query {
     personCount: Int!
     allPersons: [Person]!
@@ -54,8 +55,12 @@ const resolvers = {
     }
   },
   Person: {
-    address: (root) => `${root.street}, ${root.city}`,
-    check: () => "hey ya!"
+    address: (root) => {
+      return {
+        street: root.street,
+        city: root.city
+      }
+    }
   }
 }
 
